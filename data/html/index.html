@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Servo Test</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" type="text/css" href="/style.css">
+  <script src="/servo_test.js"></script>
+  <script>
+    let servoConfig = {
+      hasFormUpdated :"%hasFormUpdated%",
+      wsGatewayAddr : "%wsGatewayAddr%"
+    };
+  </script>
+</head>
+<body>
+    <h1>Servo Test</h1>
+    <div class="updatedMessage" id="updatedMessage">
+      <p>Paramaters updated</p>
+    </div>
+    <form id="servoForm" method="post" action="/index.html">
+      <table>
+        <tr>
+          <td>
+            <label for="servoUpDegrees">Servo up degrees:&nbsp</label>
+          </td>
+           <input type="number" name="servoNeutralDegrees" id="servoNeutralDegrees" value="%valueServoNeutralDegrees%" min="0" max="360" style="width:60px;">
+          </td>
+        </tr>
+           <tr>
+          <td colspan="2">
+            <br />
+            <button id="submitButton" type="submit" class="pushable"><span class="front">Update</span></button>
+          </td>
+        </tr>
+      </table>
+      <div id="spinnerDiv" class="loader">Loading...</div>
+    </form>
+    <br />
+    <table>
+      <tr>
+        <td><button id="buttonGearUp" class="pushable"><span class="front">Up</span></button></td>
+        <td><button id="buttonGearDown" class="pushable"><span class="front">Down</span></button></td>
+      </tr>
+    </table>    
+</body>
+</html>
