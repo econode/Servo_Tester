@@ -3,46 +3,84 @@ window.addEventListener('load', handleOnLoad);
 var websocket;
 
 function handleOnLoad(event) {
-    if( shifterConfig.hasFormUpdated == "true"){
-        const oUpdatedMessage = document.getElementById("updatedMessage");
-        oUpdatedMessage.style.display = "block";
-        setTimeout( function(){oUpdatedMessage.style.display = "none";},1500);
-    }
 
-    document.getElementById("submitButton").addEventListener("submit",handleOnSubmit);
-    // buttonGearUp
-    document.getElementById("buttonGearUp").addEventListener("pointerdown",function(){buttonState.upGearStart = new Date().getTime()} );
-    document.getElementById("buttonGearUp").addEventListener("pointerup",handleBtnGearUp);
-    // buttonGearDown
-    document.getElementById("buttonGearDown").addEventListener("pointerdown",function(){ buttonState.downGearStart = new Date().getTime()} );
-    document.getElementById("buttonGearDown").addEventListener("pointerup",handleBtnGearDown);
-
-    
-
-    let wsGatewayAddr = shifterConfig.wsGatewayAddr == "%wsGatewayAddr%" ? "ws://192.168.4.1/ws":shifterConfig.wsGatewayAddr;
+    document.getElementById("buttonUpdate").addEventListener("pointerup",handleBtnUpdate);
+    document.getElementById("buttonSweepStart").addEventListener("pointerup",handleBtnSweepStart);
+    document.getElementById("enableServo").addEventListener("change",handleEnableServo);
+    let wsGatewayAddr = servoConfig.wsGatewayAddr == "%wsGatewayAddr%" ? "ws://192.168.4.1/ws":servoConfig.wsGatewayAddr;
     initWebSocket( wsGatewayAddr );
 }
 
-function handleBtnGearUp(event){
-    var now = new Date().getTime();
-    var pressedTime = now - buttonState.upGearStart;
-    var jsonData = JSON.stringify({message:'gearUp',pressedTime:pressedTime});
+function updateMessage(){
+    const oUpdatedMessage = document.getElementById("updatedMessage");
+    oUpdatedMessage.style.display = "block";
+    setTimeout( function(){oUpdatedMessage.style.display = "none";},1500);
+}
+
+function handleBtnUpdate(event){
+    var ServoFrequency = parseInt( document.getElementById("servoFreq").value );
+    var ServoMinPulse = parseInt( document.getElementById("servoMinPulse").value );
+    var ServoMaxPulse = parseInt( document.getElementById("servoMaxPulse").value );
+    var ServoEnabled = document.getElementById("enableServo").checked ? 1 : 0;
+    var jsonData = JSON.stringify({
+        message:'updateServo',
+        ServoFrequency:ServoFrequency,
+        ServoMinPulse:ServoMinPulse,
+        ServoMaxPulse:ServoMaxPulse,
+        ServoEnabled:ServoEnabled
+    });
     console.log(jsonData);
     websocket.send(jsonData);
 }
 
-function handleBtnGearDown(event){
-    var now = new Date().getTime();
-    var pressedTime = now - buttonState.downGearStart;
-    var jsonData = JSON.stringify({message:'gearDown',pressedTime:pressedTime});
+function handleBtnSweepStart(event){
+    var SweepStart = parseInt( document.getElementById("sweepStart").value );
+    var SweepEnd = parseInt( document.getElementById("sweepEnd").value );
+    var SweepDelay = parseInt( document.getElementById("sweepDelay").value );
+    var ServoEnabled = document.getElementById("enableServo").checked ? 1 : 0;
+    var jsonData = JSON.stringify({
+        message:'sweepStart',
+        SweepStart:SweepStart,
+        SweepEnd:SweepEnd,
+        SweepDelay:SweepDelay,
+        ServoEnabled:ServoEnabled
+    });
     console.log(jsonData);
     websocket.send(jsonData);
 }
 
-function handleOnSubmit(event){
-    document.getElementById("submitButton").disabled = true;
-    document.getElementById("spinnerDiv").classList.add("spinnerDisplay");
-    websocket.close();
+function handleEnableServo(event){
+    var ServoEnabled = document.getElementById("enableServo").checked ? 1 : 0;
+    var jsonData = JSON.stringify({
+        message:'servoEnable',
+        ServoEnabled:ServoEnabled
+    });
+    console.log(jsonData);
+    websocket.send(jsonData);
+}
+
+function confirmUpdate(jsonData){
+    var ServoFrequency = parseInt(jsonData.ServoFrequency);
+    var ServoMinPulse = parseInt(jsonData.ServoMinPulse);
+    var ServoMaxPulse = parseInt(jsonData.ServoMaxPulse);
+    var ServoEnabled = parseInt(jsonData.ServoEnabled);
+    document.getElementById("servoFreq").value = ServoFrequency;
+    document.getElementById("servoMinPulse").value = ServoMinPulse;
+    document.getElementById("servoMaxPulse").value = ServoMaxPulse;
+    document.getElementById("enableServo").checked = ServoEnabled==1;
+
+    updateMessage();
+}
+
+function confirmSweep(jsonData){
+    var SweepRun = parseInt(jsonData.SweepRun);
+    var SweepDelay = parseInt(jsonData.SweepDelay);
+    var SweepEnd = parseInt(jsonData.SweepEnd);
+    var SweepStart = parseInt(jsonData.SweepStart);
+    document.getElementById("sweepStart").value = SweepStart;
+    document.getElementById("sweepEnd").value = SweepEnd;
+    document.getElementById("sweepDelay").value = SweepDelay;
+    console.log("do sweep start / or stop run:"+SweepRun);
 }
 
 function initWebSocket(wsGatewayAddr){
@@ -71,9 +109,10 @@ function onMessage(event) {
     console.log(e)
     }
     console.log(jsonData);
-    messageType = jsonData.messageType;
-    var gearPositon = jsonData.payload.currentGearPosition;
-    var gearPosId = jsonData.payload.gearPosId;
-    var pressedTime = jsonData.payload.pressedTime;
-    changeGearBoxIndicator(gearPositon);
+    if( jsonData.message == "confirmUpdate" ){
+        confirmUpdate(jsonData);
+    }
+    if( jsonData.message == "confirmSweep" ){
+        confirmSweep(jsonData);
+    }
 }

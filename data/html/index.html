@@ -7,40 +7,71 @@
   <link rel="stylesheet" type="text/css" href="/style.css">
   <script src="/servo_test.js"></script>
   <script>
-    let servoConfig = {
+    var servoConfig = {
       hasFormUpdated :"%hasFormUpdated%",
-      wsGatewayAddr : "%wsGatewayAddr%"
+      wsGatewayAddr : "%wsGatewayAddr%",
+      servoGpioPin : "%servoGpioPin%"
     };
+    var servoValues = {
+      servoFreq:"%servoFreq%",
+      servoMinPulse:"%servoMinPulse%",
+      servoMaxPulse:"%servoMaxPulse%",
+      servoEnabled:"%servoEnabled%"
+    }
   </script>
 </head>
-<body>
+<body style="width: 800px;">
     <h1>Servo Test</h1>
     <div class="updatedMessage" id="updatedMessage">
       <p>Paramaters updated</p>
     </div>
-    <form id="servoForm" method="post" action="/index.html">
       <table>
         <tr>
-          <td>
-            <label for="servoUpDegrees">Servo up degrees:&nbsp</label>
-          </td>
-           <input type="number" name="servoNeutralDegrees" id="servoNeutralDegrees" value="%valueServoNeutralDegrees%" min="0" max="360" style="width:60px;">
-          </td>
+          <td><label>Servo GPIO PIN#</label></td>
+          <td><b>%servoGpioPin%</b></td>
         </tr>
-           <tr>
-          <td colspan="2">
-            <br />
-            <button id="submitButton" type="submit" class="pushable"><span class="front">Update</span></button>
-          </td>
+        <tr>
+          <td><label>Enable Servo</label></td>
+          <td><label class="switch"><input id="enableServo" type="checkbox" checked><span class="slider round"></span></label></td>
+        </tr>
+        <tr>
+          <td><label>Servo frequency</label></td>
+          <td><input type="number" name="servoFreq" id="servoFreq" value="50" min="0" max="500" style="width:60px;"></td>
+        </tr>
+        <tr>
+          <td><label>Servo minimum pulse width</label></td>
+          <td><input type="number" name="servoMinPulse" id="servoMinPulse" value="500" min="0" max="5000" style="width:60px;"></td>
+        </tr>
+        <tr>
+          <td><label>Servo maximum pulse width</label></td>
+          <td><input type="number" name="servoMaxPulse" id="servoMaxPulse" value="2500" min="0" max="5000" style="width:60px;"></td>
+        </tr>
+        <tr>
+          <td></td>
+          <td><br/><button id="buttonUpdate" class="pushable"><span class="front">Update</span></button></td>
+
         </tr>
       </table>
-      <div id="spinnerDiv" class="loader">Loading...</div>
-    </form>
-    <br />
+      <br /> <br />
+      <h2>Sweep test</h2>
+
     <table>
       <tr>
-        <td><button id="buttonGearUp" class="pushable"><span class="front">Up</span></button></td>
-        <td><button id="buttonGearDown" class="pushable"><span class="front">Down</span></button></td>
+        <td><label>Start angle</label></td>
+        <td><input type="number" name="sweepStart" id="sweepStart" value="0" min="0" max="5000" style="width:60px;"></td>
+      </tr>
+      <tr>
+        <td><label>End angle</label></td>
+        <td><input type="number" name="sweepEnd" id="sweepEnd" value="180" min="0" max="5000" style="width:60px;"></td>
+      </tr>
+      <tr>
+        <td><label>Delay MS</label></td>
+        <td><input type="number" name="sweepDelay" id="sweepDelay" value="1000" min="0" max="5000" style="width:60px;"></td>
+      </tr>
+
+      <tr>
+        <td></td>
+        <td><br /><button id="buttonSweepStart" class="pushable"><span class="front">Start</span></button></td>
       </tr>
     </table>    
 </body>
