@@ -3,12 +3,21 @@ window.addEventListener('load', handleOnLoad);
 var websocket;
 
 function handleOnLoad(event) {
-
+    updateFromConfigValues();
     document.getElementById("buttonUpdate").addEventListener("pointerup",handleBtnUpdate);
     document.getElementById("buttonSweepStart").addEventListener("pointerup",handleBtnSweepStart);
     document.getElementById("enableServo").addEventListener("change",handleEnableServo);
     let wsGatewayAddr = servoConfig.wsGatewayAddr == "%wsGatewayAddr%" ? "ws://192.168.4.1/ws":servoConfig.wsGatewayAddr;
     initWebSocket( wsGatewayAddr );
+    updateFromConfigValues();
+}
+
+function updateFromConfigValues(){
+    document.getElementById("enableServo").checked = servoValues.servoEnabled==1;
+    document.getElementById("servoFreq").value = servoValues.servoFreq;
+    document.getElementById("servoMinPulse").value = servoValues.servoMinPulse;
+    document.getElementById("servoMaxPulse").value = servoValues.servoMaxPulse;
+    document.getElementById("servoSettleTime").value = servoValues.servoSettleTime;
 }
 
 function updateMessage(){
@@ -21,12 +30,15 @@ function handleBtnUpdate(event){
     var ServoFrequency = parseInt( document.getElementById("servoFreq").value );
     var ServoMinPulse = parseInt( document.getElementById("servoMinPulse").value );
     var ServoMaxPulse = parseInt( document.getElementById("servoMaxPulse").value );
+    var ServoSettleTime = parseInt( document.getElementById("servoSettleTime").value );
+
     var ServoEnabled = document.getElementById("enableServo").checked ? 1 : 0;
     var jsonData = JSON.stringify({
         message:'updateServo',
         ServoFrequency:ServoFrequency,
         ServoMinPulse:ServoMinPulse,
         ServoMaxPulse:ServoMaxPulse,
+        ServoSettleTime:ServoSettleTime,
         ServoEnabled:ServoEnabled
     });
     console.log(jsonData);
@@ -64,11 +76,12 @@ function confirmUpdate(jsonData){
     var ServoMinPulse = parseInt(jsonData.ServoMinPulse);
     var ServoMaxPulse = parseInt(jsonData.ServoMaxPulse);
     var ServoEnabled = parseInt(jsonData.ServoEnabled);
+    var ServoSettleTime = parseInt(jsonData.ServoSettleTime);
     document.getElementById("servoFreq").value = ServoFrequency;
     document.getElementById("servoMinPulse").value = ServoMinPulse;
     document.getElementById("servoMaxPulse").value = ServoMaxPulse;
+    document.getElementById("servoSettleTime").value = ServoSettleTime;
     document.getElementById("enableServo").checked = ServoEnabled==1;
-
     updateMessage();
 }
 

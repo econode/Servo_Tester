@@ -16,6 +16,7 @@
       servoFreq:"%servoFreq%",
       servoMinPulse:"%servoMinPulse%",
       servoMaxPulse:"%servoMaxPulse%",
+      servoSettleTime:"%servoSettleTime%",
       servoEnabled:"%servoEnabled%"
     }
   </script>
@@ -36,15 +37,19 @@
         </tr>
         <tr>
           <td><label>Servo frequency</label></td>
-          <td><input type="number" name="servoFreq" id="servoFreq" value="50" min="0" max="500" style="width:60px;"></td>
+          <td><input type="number" name="servoFreq" id="servoFreq" min="0" max="500" style="width:60px;"></td>
         </tr>
         <tr>
           <td><label>Servo minimum pulse width</label></td>
-          <td><input type="number" name="servoMinPulse" id="servoMinPulse" value="500" min="0" max="5000" style="width:60px;"></td>
+          <td><input type="number" name="servoMinPulse" id="servoMinPulse" min="0" max="5000" style="width:60px;"></td>
         </tr>
         <tr>
           <td><label>Servo maximum pulse width</label></td>
-          <td><input type="number" name="servoMaxPulse" id="servoMaxPulse" value="2500" min="0" max="5000" style="width:60px;"></td>
+          <td><input type="number" name="servoMaxPulse" id="servoMaxPulse" min="0" max="5000" style="width:60px;"></td>
+        </tr>
+        <tr>
+          <td><label>Servo settle time</label></td>
+          <td><input type="number" name="servoSettleTime" id="servoSettleTime"  min="0" max="5000" style="width:60px;"></td>
         </tr>
         <tr>
           <td></td>

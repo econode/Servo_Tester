@@ -2,13 +2,7 @@
 
 ESP32 Servo tester
 
-Author: Matt Way 202 (https://github.com/matt-kiwi)
-This project is done in the spirt of OpenSource and the memory of Burt Munro the orginal DIY streamliner.
-
-
-
-
-
+Author: Matt Way 2024 (https://github.com/matt-kiwi)
 
 ## Requirements
 * VSCode with PlatformIO extension. See the following on how to install VSCode/PlatformIO (https://platformio.org/platformio-ide)
